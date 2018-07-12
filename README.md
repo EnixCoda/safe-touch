@@ -34,6 +34,11 @@ But we cannot use destructuring here. Also, path of the property is written as s
 
 ## How would this tool help you
 
+Let's install it first.
+```
+npm install safe-touch
+```
+
 ```js
 import safeTouch from 'safe-touch'
 
