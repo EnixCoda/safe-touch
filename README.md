@@ -60,8 +60,8 @@ key3() // undefined
 ```
 
 ### Intellisense
-Ordinary intellisense for object.
+Thanks to typings, smart editors can help you even after wrapping.
 ![](https://user-images.githubusercontent.com/7480839/42639648-1b9d6d00-8623-11e8-81ec-2927913e56cb.png)
 
-Thanks to typings, smart editor could help you even after wrapping it.
+You can get autocompletion after retrieving the original object.
 ![](https://user-images.githubusercontent.com/7480839/42639650-1d8149a2-8623-11e8-9080-345b78d582d3.png)
