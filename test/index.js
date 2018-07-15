@@ -8,42 +8,38 @@ const normalObject = {
 }
 const touched = safeTouch(normalObject)
 
-log('Let\'s start with this normal object:', `
-  const normalObject = {
-    existProperty: null,
-  }`)
+console.log(`
+Let's start with this normal object:
+  const normalObject = { existProperty: null }
 
-log('Wrap it with safeTouch:', `
+Wrap it with safeTouch:
   import safeTouch from 'safe-touch'
-  const touched = safeTouch(normalObject)`)
+  const touched = safeTouch(normalObject)
+`)
 
-log(
-  'Call it to get the original object.\n',
-  '(touched() === normalObject) is',
-  touched() === normalObject,
-)
+console.log(`
+Call to get the original object.
+${formatTF(touched() === normalObject)} touched() === normalObject
+`)
 
-log(
-  'You can get property of original object.\n',
-  '(touched.existProperty() === normalObject.existProperty) is',
-  normalObject.existProperty === touched.existProperty(),
-)
+console.log(`
+You can get property of original object.
+${formatTF(normalObject.existProperty === touched.existProperty())} touched.existProperty() === normalObject.existProperty
+`)
 
-log(
-  'You can access non-exist property safely.\n',
-  '(touched.go.deeper.even.random[Math.random()]() === undefined) is',
-  touched.go.deeper.even.random[Math.random()]() === undefined,
-)
+console.log(`
+You can access non-exist property safely.
+${formatTF(touched.go.deeper.even.random[Math.random()]() === undefined)} touched.go.deeper.even.random[Math.random()]() === undefined
+`)
 
-log(
-  'What happens with functions?\n',
-  `normalObject.whatsThis = function () { return this }`,
-  'Access function property will NOT preserve `this`.\n',
-  'Does (touched.whatsThis()()) equal to normalObject.whatsThis()?',
-  touched.whatsThis()() === normalObject.whatsThis(),
-)
+console.log(`
+What happens with functions?
+  normalObject.whatsThis = function () { return this }
+Access function property will NOT❎ preserve 'this'
+${formatTF(touched.whatsThis()() !== normalObject.whatsThis())}  touched.whatsThis()() !== normalObject.whatsThis()
+`)
 
-log('---------------------------------------------------------------')
+console.log('---------------------------------------------------------------')
 
 ~[
   ['empty string', ''],
@@ -56,13 +52,13 @@ log('---------------------------------------------------------------')
   ['undefined', undefined],
   ['RegExp', /d/],
   ['Array', []],
-  ['log function', log],
+  ['function', function func() {}],
 ].forEach(typeCheck)
 
-log('---------------------------------------------------------------')
+console.log('---------------------------------------------------------------')
 
-function log(...args) {
-  console.log(...args, '\n')
+function formatTF(trueOrFalse) {
+  return trueOrFalse ? '✅' : '❌'
 }
 
 function typeCheck([name, v]) {
@@ -70,6 +66,8 @@ function typeCheck([name, v]) {
   const evaluated = vv()
   const vf = `${evaluated}` === ''
     ? JSON.stringify(evaluated)
-    : evaluated
-  log(vv[Math.random()]() === undefined && 'safely', 'accessed', `${name},`, 'got', `(${vf})`, '.')
+    : typeof evaluated === 'string'
+      ? `"${evaluated}"`
+      : evaluated
+  console.log(formatTF(vv[Math.random()]() === undefined), 'accessed', `${name} (${vf})`)
 }
