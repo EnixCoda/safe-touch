@@ -3,11 +3,11 @@ export interface ProxyHandler<T> {
   apply?(): T
 }
 
-export interface ProxyConstructor {
-  new <T>(target: () => T, handler: ProxyHandler<T>): T & Callable<T>
-}
-
 const noop = () => undefined
+
+export interface ProxyConstructor<T> {
+  new (noop: Function, handler: ProxyHandler<T>): T & Callable<T>
+}
 
 const blackHole: any = new Proxy(noop, {
   get: () => blackHole,
@@ -19,14 +19,12 @@ interface Callable<T> {
 }
 
 export default function safeTouch<T>(source: T): T & Callable<T> {
-  if (typeof source !== 'object' || source === null) return blackHole
-  const apply = () => source
-  const proxy = new (<ProxyConstructor>Proxy)(apply, {
-    apply,
+  if (source === undefined) return blackHole
+  return new (<ProxyConstructor<T>>Proxy)(noop, {
+    apply: () => source,
     get: (_, key) => {
-      if (Object.prototype.hasOwnProperty.call(source, key)) return safeTouch(source[key])
+      if (source !== null && Object.prototype.hasOwnProperty.call(source, key)) return safeTouch(source[key])
       return blackHole
     },
   })
-  return proxy
 }
