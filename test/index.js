@@ -1,7 +1,7 @@
 const safeTouch = require('../lib').default
 
 const normalObject = {
-  existProperty: null,
+  existProperty: 1,
   whatsThis() {
     return this
   },

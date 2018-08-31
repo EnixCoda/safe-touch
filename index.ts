@@ -1,30 +1,30 @@
-export interface ProxyHandler<T> {
-  get?<K extends keyof T>(target: () => T, p: K): T[K] & Callable<T[K]>
-  apply?(): T
+interface Callable<T> {
+  (): T
 }
 
-const noop = () => undefined
-
-export interface ProxyConstructor<T> {
-  new (noop: Function, handler: ProxyHandler<T>): T & Callable<T>
+interface ProxyHandler<T> {
+  get?<K extends keyof T> (target: T, p: K): T[K] & Callable<T[K]>
+  apply? (): T
 }
 
-const blackHole: any = new Proxy(noop, {
-  get: () => blackHole,
+interface ProxyConstructor<T> {
+  new (target: Function, handler: ProxyHandler<T>): T & Callable<T>
+}
+
+function noop() {}
+
+const wormHole:any = new (<ProxyConstructor<any>>Proxy)(noop, {
+  get() { return wormHole },
   apply: noop,
 })
 
-interface Callable<T> {
-  ():T
-}
-
 export default function safeTouch<T>(source: T): T & Callable<T> {
-  if (source === undefined) return blackHole
+  if (source === undefined) return wormHole
   return new (<ProxyConstructor<T>>Proxy)(noop, {
     apply: () => source,
     get: (_, key) => {
       if (source !== null && Object.prototype.hasOwnProperty.call(source, key)) return safeTouch(source[key])
-      return blackHole
+      return wormHole
     },
   })
 }
