@@ -1,7 +1,7 @@
 {
   "name": "safe-touch",
-  "version": "0.1.1",
-  "description": "Touch property of object safely with ease.",
+  "version": "0.1.2",
+  "description": "Touch deep properties safely with ease.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "repository": {
