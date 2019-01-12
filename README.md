@@ -2,6 +2,8 @@
 
 > Touch deeply buried property safely with ease.
 
+[Online Demo](https://stackblitz.com/edit/play-safe-touch)
+
 ## The existing problem
 
 If you need to dig up some deeply buried properties in an object:
@@ -17,7 +19,7 @@ const value = someObject && someObject.key1 && someObject.key1.key2 && someObjec
 // or
 try {
   const value = someObject.key1.key2.key3
-} catch(err) {
+} catch (err) {
   // ...
 }
 ```
@@ -25,6 +27,7 @@ try {
 Ugly.
 
 Lodash provides `get` method to help, won't throw error:
+
 ```js
 import _ from 'lodash'
 const value = _.get(someObject, 'key1.key2.key3')
@@ -35,6 +38,7 @@ But we cannot use destructuring here. Also, path of the property is written as s
 ## How would this tool help you
 
 Let's install it first.
+
 ```
 npm install safe-touch
 ```
@@ -60,11 +64,16 @@ touched.existingProperty() // null
 touched.something.does.not.exist[Math.random()]() // undefined
 
 // Destructuring
-const { key1: { key2: { key3 } } } = normalObject
+const {
+  key1: {
+    key2: { key3 },
+  },
+} = normalObject
 key3() // undefined
 ```
 
 ### Intellisense
+
 Thanks to typings, smart editors can help you even after wrapping.
 ![](https://user-images.githubusercontent.com/7480839/42639648-1b9d6d00-8623-11e8-81ec-2927913e56cb.png)
 
