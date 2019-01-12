@@ -8,7 +8,9 @@
     "url": "https://github.com/EnixCoda/safe-touch"
   },
   "scripts": {
-    "test": "node ./test"
+    "test": "node ./test",
+    "start": "tsc --watch",
+    "build": "tsc"
   },
   "keywords": [
     "object",
@@ -16,5 +18,8 @@
     "property"
   ],
   "author": "EnixCoda",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.2.2"
+  }
 }
