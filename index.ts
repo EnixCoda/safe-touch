@@ -2,7 +2,7 @@ interface Callable<T> {
   (): T | undefined
 }
 
-type MixProps<T> = { readonly [P in keyof T]: Mix<T[P]> }
+type MixProps<T> = { readonly [P in keyof T]-?: Mix<T[P]> }
 
 type Mix<T> = Callable<T> & MixProps<T>
 
