@@ -24,13 +24,16 @@ const wormHole: any = new (<MyProxyConstructor<any>>Proxy)(noop, {
   apply: noop,
 })
 
-export default function safeTouch<T>(source: T): Mix<T> {
+export function safeTouch<T>(source: T): Mix<T> {
   if (source === undefined) return wormHole
   return new (<MyProxyConstructor<T>>Proxy)(noop, {
     apply: () => source,
     get: (_, key) => {
-      if (source !== null && Object.prototype.hasOwnProperty.call(source, key)) return safeTouch(source[key])
+      if (source !== null && Object.prototype.hasOwnProperty.call(source, key))
+        return safeTouch(source[key])
       return wormHole
     },
   })
 }
+
+export default safeTouch
