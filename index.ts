@@ -2,15 +2,13 @@ interface Callable<T> {
   (): T | undefined
 }
 
-type MixProps<T> = {
-  readonly [P in keyof T]: Mix<T[P]>
-}
+type MixProps<T> = { readonly [P in keyof T]: Mix<T[P]> }
 
 type Mix<T> = Callable<T> & MixProps<T>
 
 interface MyProxyHandler<T> {
-  get?<K extends keyof T> (target: T, p: K): Mix<T[K]>
-  apply? (): T
+  get?<K extends keyof T>(target: T, p: K): Mix<T[K]>
+  apply?(): T
 }
 
 interface MyProxyConstructor<T> {
@@ -19,8 +17,10 @@ interface MyProxyConstructor<T> {
 
 function noop() {}
 
-const wormHole:any = new (<MyProxyConstructor<any>>Proxy)(noop, {
-  get() { return wormHole },
+const wormHole: any = new (<MyProxyConstructor<any>>Proxy)(noop, {
+  get() {
+    return wormHole
+  },
   apply: noop,
 })
 
