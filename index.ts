@@ -1,5 +1,5 @@
 interface Callable<T> {
-  (): T | undefined
+  (fallback?: T): T | undefined
 }
 
 type MixProps<T> = T extends undefined ? undefined : { readonly [P in keyof T]-?: Mix<T[P]> }
