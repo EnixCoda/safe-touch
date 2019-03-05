@@ -2,6 +2,7 @@ const safeTouch = require('../lib').default
 
 const normalObject = {
   existProperty: 1,
+  zero: 0,
   whatsThis() {
     return this
   },
@@ -24,19 +25,25 @@ ${formatTF(touched() === normalObject)} touched() === normalObject
 
 console.log(`
 You can get property of original object.
-${formatTF(normalObject.existProperty === touched.existProperty())} touched.existProperty() === normalObject.existProperty
+${formatTF(
+  normalObject.existProperty === touched.existProperty()
+)} touched.existProperty() === normalObject.existProperty
 `)
 
 console.log(`
 You can access non-exist property safely.
-${formatTF(touched.go.deeper.even.random[Math.random()]() === undefined)} touched.go.deeper.even.random[Math.random()]() === undefined
+${formatTF(
+  touched.go.deeper.even.random[Math.random()]() === undefined
+)} touched.go.deeper.even.random[Math.random()]() === undefined
 `)
 
 console.log(`
 What happens with functions?
   normalObject.whatsThis = function () { return this }
 Access function property will NOT❎ preserve 'this'
-${formatTF(touched.whatsThis()() !== normalObject.whatsThis())}  touched.whatsThis()() !== normalObject.whatsThis()
+${formatTF(
+  touched.whatsThis()() !== normalObject.whatsThis()
+)}  touched.whatsThis()() !== normalObject.whatsThis()
 `)
 
 console.log('---------------------------------------------------------------')
@@ -55,8 +62,6 @@ console.log('---------------------------------------------------------------')
   ['function', function func() {}],
 ].forEach(typeCheck)
 
-console.log('---------------------------------------------------------------')
-
 function formatTF(trueOrFalse) {
   return trueOrFalse ? '✅' : '❌'
 }
@@ -64,10 +69,29 @@ function formatTF(trueOrFalse) {
 function typeCheck([name, v]) {
   const vv = safeTouch(v)
   const evaluated = vv()
-  const vf = `${evaluated}` === ''
-    ? JSON.stringify(evaluated)
-    : typeof evaluated === 'string'
+  const vf =
+    `${evaluated}` === ''
+      ? JSON.stringify(evaluated)
+      : typeof evaluated === 'string'
       ? `"${evaluated}"`
       : evaluated
   console.log(formatTF(vv[Math.random()]() === undefined), 'accessed', `${name} (${vf})`)
 }
+
+console.log('---------------------------------------------------------------')
+
+console.log('Testing fallback values\n')
+
+function expectValue(evalString, expectedValue) {
+  console.log(evalString, `should be`, expectedValue, formatTF(expectedValue === eval(evalString)))
+}
+
+expectValue(`touched.existProperty()`, 1)
+expectValue(`touched.existProperty(2)`, 1)
+expectValue(`touched.existProperty(0)`, 1)
+expectValue(`touched.nonExistProperty()`, undefined)
+expectValue(`touched.nonExistProperty(0)`, 0)
+expectValue(`safeTouch(0)(1)`, 0)
+expectValue(`safeTouch(false)(true)`, false)
+
+console.log('---------------------------------------------------------------')

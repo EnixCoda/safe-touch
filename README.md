@@ -63,6 +63,10 @@ touched.existingProperty() // null
 // Access not existing property path safely
 touched.something.does.not.exist[Math.random()]() // undefined
 
+// Return fallback value if got undefined
+const fallback = 0
+touched.something.does.not.exist[Math.random()](fallback) // 0
+
 // Destructuring
 const {
   key1: {
