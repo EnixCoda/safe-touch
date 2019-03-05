@@ -1,7 +1,7 @@
 interface Callable<T> {
     (): T | undefined;
 }
-declare type MixProps<T> = {
+declare type MixProps<T> = T extends undefined ? undefined : {
     readonly [P in keyof T]-?: Mix<T[P]>;
 };
 declare type Mix<T> = Callable<T> & MixProps<T>;
