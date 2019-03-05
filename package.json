@@ -1,6 +1,6 @@
 {
   "name": "safe-touch",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Touch deep properties safely with ease.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
