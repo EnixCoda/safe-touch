@@ -1,5 +1,6 @@
 interface Callable<T> {
-  (fallback?: T): T | undefined
+  (): T | undefined
+  <K>(fallback?: K): K extends T ? K : T | undefined
 }
 
 type MixProps<T> = T extends undefined ? undefined : { readonly [P in keyof T]-?: Mix<T[P]> }
@@ -15,7 +16,7 @@ interface MyProxyConstructor<T> {
   new (target: Function, handler: MyProxyHandler<T>): Mix<T>
 }
 
-function applyWithFallback(original: any): MyProxyHandler<any>['apply'] {
+function applyWithFallback<T>(original: T): MyProxyHandler<T>['apply'] {
   return function tryFallback(_, __, [fallback]) {
     return original === undefined ? fallback : original
   }
