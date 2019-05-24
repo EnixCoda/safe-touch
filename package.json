@@ -4,6 +4,9 @@
   "description": "Touch deep properties safely with ease.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "repository": {
     "url": "https://github.com/EnixCoda/safe-touch"
   },
