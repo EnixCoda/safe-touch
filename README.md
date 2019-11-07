@@ -78,8 +78,14 @@ key3() // undefined
 
 ### Intellisense
 
-Thanks to typings, smart editors can help you even after wrapping.
+Thanks to typings, smart editors still recognizes wrapped variables.
 ![](https://user-images.githubusercontent.com/7480839/42639648-1b9d6d00-8623-11e8-81ec-2927913e56cb.png)
 
-You can get autocompletion after retrieving the original object.
+You still get autocompletion after retrieving the original object.
 ![](https://user-images.githubusercontent.com/7480839/42639650-1d8149a2-8623-11e8-9080-345b78d582d3.png)
+
+## Alternatives
+Optional chaining is can help at language-level.
+
+[TC39 Proposal](https://github.com/tc39/proposal-optional-chaining)
+[TypeScript supports after 3.7](https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/#optional-chaining)
