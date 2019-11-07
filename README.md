@@ -88,4 +88,5 @@ You still get autocompletion after retrieving the original object.
 Optional chaining is can help at language-level.
 
 [TC39 Proposal](https://github.com/tc39/proposal-optional-chaining)
+
 [TypeScript supports after 3.7](https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/#optional-chaining)
