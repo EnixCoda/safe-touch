@@ -1,10 +1,12 @@
 {
   "name": "safe-touch",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Touch deep properties safely with ease.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "repository": {
     "url": "https://github.com/EnixCoda/safe-touch"
   },
@@ -13,7 +15,11 @@
     "start": "tsc --watch",
     "build": "tsc"
   },
-  "keywords": ["object", "proxy", "property"],
+  "keywords": [
+    "object",
+    "proxy",
+    "property"
+  ],
   "author": "EnixCoda",
   "license": "MIT",
   "devDependencies": {
