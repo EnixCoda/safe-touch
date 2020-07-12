@@ -35,7 +35,7 @@ const value = _.get(someObject, 'key1.key2.key3')
 
 But we cannot use destructuring here. Also, path of the property is written as string, IDEs and editors cannot autocomplete it.
 
-## How would this tool help you
+## How can this tool help you
 
 Let's install it first.
 
@@ -60,7 +60,7 @@ touched() === normalObject // true
 // Call to get property of original object
 touched.existingProperty() // null
 
-// Access not existing property path safely
+// Access inexistent property path safely
 touched.something.does.not.exist[Math.random()]() // undefined
 
 // Return fallback value if got undefined
@@ -72,7 +72,7 @@ const {
   key1: {
     key2: { key3 },
   },
-} = normalObject
+} = touched
 key3() // undefined
 ```
 
@@ -85,8 +85,7 @@ You still get autocompletion after retrieving the original object.
 ![](https://user-images.githubusercontent.com/7480839/42639650-1d8149a2-8623-11e8-9080-345b78d582d3.png)
 
 ## Alternatives
-Optional chaining is can help at language-level.
+Optional chaining can solve the problem at language level, see:
 
-[TC39 Proposal](https://github.com/tc39/proposal-optional-chaining)
-
-[TypeScript supports after 3.7](https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/#optional-chaining)
+- [TC39 Proposal](https://github.com/tc39/proposal-optional-chaining)
+- [TypeScript 3.7 implements optional chaining](https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/#optional-chaining)
