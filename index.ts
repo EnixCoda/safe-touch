@@ -1,35 +1,37 @@
-interface Callable<T> {
-  (): T | undefined
-  <K>(fallback?: K): K extends T ? K : T | undefined
+interface SafeCallable<T> {
+  (): T | undefined;
+  <K>(fallback: K): T extends undefined ? K : K | T;
 }
 
-type MixProps<T> = T extends undefined ? undefined : { readonly [P in keyof T]-?: Mix<T[P]> }
+type SafeProps<T> = { readonly [P in keyof T]-?: SafeTouch<T[P]> };
+type Safe<T> = SafeProps<T> & SafeCallable<T>;
+type SafeTouch<T> = T extends undefined | number | boolean
+  ? SafeProps<any> & SafeCallable<undefined>
+  : Safe<T>;
 
-type Mix<T> = Callable<T> & MixProps<T>
-
-interface MyProxyHandler<T> {
-  get<K extends keyof T>(target: T, p: K): Mix<T[K]>
-  apply(target: any, thisArg: any, argList: any[]): T
+interface SafeProxyHandler<T> {
+  get<K extends keyof T>(target: T, p: K): SafeTouch<T[K]>;
+  apply(target: any, thisArg: any, argList: any[]): T;
 }
 
-interface MyProxyConstructor<T> {
-  new (target: Function, handler: MyProxyHandler<T>): Mix<T>
-}
-
-function applyWithFallback<T>(original: T): MyProxyHandler<T>['apply'] {
+function applyWithFallback<T>(original: T): SafeProxyHandler<T>["apply"] {
   return function tryFallback(_, __, [fallback]) {
-    return original === undefined ? fallback : original
-  }
+    return original === undefined ? fallback : original;
+  };
 }
 
 function noop() {}
 
-// `var` for using `typeof {undefinedVariable}`
-var wormHole = safeTouch(undefined)
+// Using var to prevent circular referencing error on the first call
+var blackHole = touch(undefined);
 
-export function safeTouch<T>(source: T): Mix<T> {
-  if (source === undefined && typeof wormHole !== 'undefined') return wormHole as Mix<T>
-  return new (<MyProxyConstructor<T>>Proxy)(noop, {
+function touch(source?: undefined): SafeTouch<any>;
+function touch<T>(source: T): SafeTouch<T>;
+
+function touch(source: any) {
+  if (typeof source === "undefined" && typeof blackHole !== "undefined")
+    return blackHole;
+  return new Proxy(noop, {
     apply: applyWithFallback(source),
     get: (_, key) => {
       if (
@@ -37,10 +39,12 @@ export function safeTouch<T>(source: T): Mix<T> {
         source !== null &&
         Object.prototype.hasOwnProperty.call(source, key)
       )
-        return safeTouch(source[key])
-      return wormHole
+        return touch(source[key]);
+      return blackHole;
     },
-  })
+  });
 }
 
-export default safeTouch
+export const safeTouch = touch;
+
+export default touch;

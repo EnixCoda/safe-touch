@@ -5,7 +5,7 @@ const normalObject = {
   zero: 0,
   whatsThis() {
     return this;
-  }
+  },
 };
 const touched = safeTouch(normalObject);
 
@@ -48,7 +48,7 @@ ${formatTF(
 
 console.log("---------------------------------------------------------------");
 
-void [
+const cases: [string, unknown][] = [
   ["empty string", ""],
   ["normal string", "str"],
   ["number 0", 0],
@@ -59,14 +59,15 @@ void [
   ["undefined", undefined],
   ["RegExp", /d/],
   ["Array", []],
-  ["function", function func() {}]
-].forEach(typeCheck);
+  ["function", function func() {}],
+];
+cases.forEach(typeCheck);
 
-function formatTF(trueOrFalse) {
+function formatTF(trueOrFalse: boolean) {
   return trueOrFalse ? "✅" : "❌";
 }
 
-function typeCheck([name, v]) {
+function typeCheck([name, v]: [string, any]) {
   const vv = safeTouch(v);
   const evaluated = vv();
   const vf =
@@ -86,12 +87,16 @@ console.log("---------------------------------------------------------------");
 
 console.log("Testing fallback values\n");
 
-function expectValue(evalString, expectedValue) {
+function expectValue(
+  evalString: string,
+  expectedValue: unknown,
+  evaluate = () => eval(evalString)
+) {
   console.log(
     evalString,
     `should be`,
     expectedValue,
-    formatTF(expectedValue === eval(evalString))
+    formatTF(expectedValue === evaluate())
   );
 }
 
@@ -100,7 +105,10 @@ expectValue(`touched.existProperty(2)`, 1);
 expectValue(`touched.existProperty(0)`, 1);
 expectValue(`touched.nonExistProperty()`, undefined);
 expectValue(`touched.nonExistProperty(0)`, 0);
-expectValue(`safeTouch(0)(1)`, 0);
-expectValue(`safeTouch(false)(true)`, false);
+expectValue(`safeTouch(0)()`, 0, () => safeTouch(0)());
+expectValue(`safeTouch(0)(1)`, 0, () => safeTouch(0)(1));
+expectValue(`safeTouch(false)()`, false, () => safeTouch(false)());
+expectValue(`safeTouch(false)(true)`, false, () => safeTouch(false)(true));
+expectValue(`safeTouch()[Math.random()](1)`, 1, () => safeTouch()[Math.random()](1));
 
 console.log("---------------------------------------------------------------");
