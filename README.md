@@ -12,16 +12,20 @@ console.log(state.user.name); // Uncaught TypeError: Cannot read property 'name'
 Safe touch is a safe way to access deeply buried properties.
 
 ```js
-const $state = safeTouch(state);  // retrieving properties from $state is always safe
-console.log($state() === state);  // true; invoke to get the original value
-let { user: { name } } = $state;  // support native destructuring
-console.log(name());              // 'EnixCoda'
-console.log($state.user.name());  // 'EnixCoda'
+const $state = safeTouch(state);      // retrieving properties from $state is always safe
+console.log($state() === state);      // true; invoke to get the original value
+{
+  let { user: { name } } = $state;    // support native destructuring
+  console.log(name());                // 'EnixCoda'
+  console.log($state.user.name());    // 'EnixCoda'
+}
 
-state.user = null;                // simulating logout
-let { user: { name } } = $state;  // support native destructuring
-console.log(name());              // undefined; no errors!
-console.log($state.user.name());  // undefined; no errors!
+Object.assign(state, { user: null })  // simulating logout
+{
+  let { user: { name } } = $state;    // support native destructuring
+  console.log(name());                // undefined; no errors!
+  console.log($state.user.name());    // undefined; no errors!
+}
 ```
 
 [Playground](https://codesandbox.io/s/safe-touch-playground-o96vi)
