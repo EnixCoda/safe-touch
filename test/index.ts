@@ -33,7 +33,7 @@ ${formatTF(
 console.log(`
 You can access non-exist property safely.
 ${formatTF(
-  (touched as any).go.deeper.even.random[Math.random()]() === undefined
+  touched.go.deeper.even.random[Math.random()]() === undefined
 )} touched.go.deeper.even.random[Math.random()]() === undefined
 `);
 
@@ -109,6 +109,8 @@ expectValue(`safeTouch(0)()`, 0, () => safeTouch(0)());
 expectValue(`safeTouch(0)(1)`, 0, () => safeTouch(0)(1));
 expectValue(`safeTouch(false)()`, false, () => safeTouch(false)());
 expectValue(`safeTouch(false)(true)`, false, () => safeTouch(false)(true));
-expectValue(`safeTouch()[Math.random()](1)`, 1, () => safeTouch()[Math.random()](1));
+expectValue(`safeTouch()[Math.random()](1)`, 1, () =>
+  safeTouch()[Math.random()](1)
+);
 
 console.log("---------------------------------------------------------------");

@@ -1,12 +1,16 @@
 interface SafeCallable<T> {
   (): T | undefined;
-  <K>(fallback: K): T extends undefined ? K : K | T;
+  <K>(fallback: K): K | T;
 }
 
-type SafeProps<T> = { readonly [P in keyof T]-?: SafeTouch<T[P]> };
+type SafeProps<T> = {
+  readonly [P in keyof T]-?: SafeTouch<T[P]>;
+} & {
+  [P: string]: SafeTouch<any>;
+};
 type Safe<T> = SafeProps<T> & SafeCallable<T>;
 type SafeTouch<T> = T extends undefined | number | boolean
-  ? SafeProps<any> & SafeCallable<undefined>
+  ? Safe<any>
   : Safe<T>;
 
 interface SafeProxyHandler<T> {
