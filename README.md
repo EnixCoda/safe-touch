@@ -1,87 +1,88 @@
 # Safe Touch
 
-> Touch deeply buried property safely with ease. This is like optional chaining at runtime.
+> Touch deeply buried properties safely.
 
-[Playground](https://stackblitz.com/edit/play-safe-touch)
-
-It is available as `safe-touch` on npm.
+[Playground](https://codesandbox.io/s/safe-touch-playground-o96vi)
 
 ## The existing problem
 
-Sometimes we dig up deeply buried properties:
+Let's say you need to dig up some deeply buried properties from an object:
 
 ```js
-const value = someObject.key1.key2.key3
+const obj = { a: { b: true } };
+const value1 = obj.a.b; // true
+const value2 = obj.c.d; // Uncaught TypeError: Cannot read property 'd' of undefined (value2.c)
 ```
 
-An error will be thrown if any value in the middle of the chain is falsy, i.e. `Uncaught TypeError: Cannot read property of undefined`
-
-If we try to make it safer, code become verbose.
+To prevent error, you might do such things:
 
 ```js
-const value = someObject && someObject.key1 && someObject.key1.key2 && someObject.key1.key2.key3
-// or
+// 1. manually expanded chain
+const value = obj && obj.c && obj.c.d && obj.c.d;
+// 2. wrap in try-catch
 try {
-  const value = someObject.key1.key2.key3
-} catch (err) {
-  // ...
-}
+  const value = obj.c.d;
+} catch (err) {}
 ```
 
-Lodash provides a `get` method to help, it won't throw error:
+Lodash provides [the get function](https://lodash.com/docs/4.17.15#get), which doesn't throw error, accepts a path in string:
 
 ```js
-import _ from 'lodash'
-const value = _.get(someObject, 'key1.key2.key3')
+const value = require("lodash").get(obj, "c.d");
 ```
 
-But we cannot use destructuring here. Also, path of the property is written as string, IDEs and editors cannot autocomplete it.
+But it is not very straight forward, IDE and editor cannot autocomplete in it.
 
-## How can `safe-touch` help you
+## Install
+
+It's available as `safe-touch` on npm.
+
+```
+$ yarn add safe-touch
+```
+
+## How can `safe-touch` help
 
 ```js
-import safeTouch from 'safe-touch'
+import safeTouch from "safe-touch";
 
-// Create a sample object for introduction
-const normalObject = {
-  existingProperty: null,
-}
+const obj = { a: { b: true } };
 
 // Wrap it with safeTouch:
-const touched = safeTouch(normalObject)
+const safe = safeTouch(obj);
 
-// Call to get the original object
-touched() === normalObject // true
+// Invoke to get the original value
+safe() === obj; // true
 
-// Call to get property of original object
-touched.existingProperty() // null
+// Invoke on property to get original property value
+safe.a.b(); // true
 
-// Access inexistent property path safely
-touched.something.does.not.exist[Math.random()]() // undefined
+// Access inexistent property safely
+safe.c.d(); // undefined
 
 // Return fallback value if got undefined
-const fallback = 0
-touched.something.does.not.exist[Math.random()](fallback) // 0
+const fallback = 0;
+safe.something.does.not.exist[Math.random()](fallback); // 0
 
-// Destructuring
+// Support native destructuring
 const {
-  key1: {
-    key2: { key3 },
-  },
-} = touched
-key3() // undefined
+  a: { b },
+  c: { d },
+} = safe;
+b(); // true
+d(); // undefined
 ```
 
 ### Intellisense
 
-Thanks to typings, smart editors still recognizes wrapped variables.
+Thanks to type system, smart editors still recognizes wrapped and unwrapped variables.
 ![](https://user-images.githubusercontent.com/7480839/42639648-1b9d6d00-8623-11e8-81ec-2927913e56cb.png)
 
-You'll still get autocompletion after retrieving the original object.
 ![](https://user-images.githubusercontent.com/7480839/42639650-1d8149a2-8623-11e8-9080-345b78d582d3.png)
 
 ## Alternatives
-Optional chaining can solve the problem at language-level, see:
+
+Optional chaining can solve the problem at language level during build time.
 
 - [TC39 Proposal](https://github.com/tc39/proposal-optional-chaining)
 - [TypeScript 3.7 implements optional chaining](https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/#optional-chaining)
